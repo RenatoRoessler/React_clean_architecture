@@ -1,6 +1,7 @@
 {
   "extends": [
-    "standard-with-typescript"
+    "standard-with-typescript",
+    "plugin:@typescript-eslint/recommended"
   ],
   "parserOptions": {
     "project": "./tsconfig.json"
@@ -9,5 +10,6 @@
     "@typescript-eslint/consistent-type-definitions": "off",
     "@typescript-eslint/strict-boolean-expressions": "off",
     "@typescript-eslint/camelcase": "off"
+    
   }
 }
