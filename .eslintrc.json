@@ -19,6 +19,13 @@
     "@typescript-eslint/camelcase": "off",
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error"   ,
-    "react/prop-types": "off" 
+    "react/prop-types": "off" ,
+    "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/comma-spacing": "off",
+    "@typescript-eslint/return-await": "off",
+    "@typescript-eslint/no-namespace": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "no-redeclare": "off",
+    "import/export": "off"
   }
 }
