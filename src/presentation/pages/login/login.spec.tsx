@@ -8,9 +8,10 @@ import {
   RenderResult,
   waitFor
 } from '@testing-library/react'
-import React from 'react'
-import Login from './login'
 import 'jest-localstorage-mock'
+import React from 'react'
+import { BrowserRouter } from 'react-router-dom'
+import Login from './login'
 
 type SutTypes = {
   sut: RenderResult
@@ -25,9 +26,19 @@ const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
   const authenticationSpy = new AuthenticationSpy()
   validationStub.errorMessage = params?.validationError
-  const sut = render(<Login validation={validationStub} authentication={authenticationSpy} />)
+  const sut = render(
+    <BrowserRouter >
+      <Login validation={validationStub} authentication={authenticationSpy} />
+    </BrowserRouter >)
   return { sut, authenticationSpy }
 }
+
+const mockUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  ...jest.requireActual('react-router-dom') as any,
+  useNavigate: () => mockUsedNavigate
+}))
 
 const simulateValidSubmit = (sut: RenderResult, email = faker.internet.email(), password = faker.internet.password()): void => {
   populateEmailField(sut, email)
@@ -157,5 +168,12 @@ describe('Login Component', () => {
       sut.getByTestId('form')
       expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.account.accessToken)
     })
+  })
+
+  test('should go to signup page', () => {
+    const { sut } = makeSut()
+    const register = sut.getByTestId('signup')
+    fireEvent.click(register)
+    expect(mockUsedNavigate).toHaveBeenCalledWith('/signup')
   })
 })

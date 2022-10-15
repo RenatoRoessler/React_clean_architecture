@@ -10,6 +10,7 @@ import Styles from './login-styles.scss'
 import Context from '@/presentation/contexts/form/form-context'
 import { Validation } from '@/presentation/protocols/validation'
 import { Authentication } from '@/domain/usecases'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 
 type Props = {
   validation: Validation
@@ -34,6 +35,8 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
     })
   }, [state.email, state.password])
 
+  const navigate = useNavigate()
+
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
@@ -48,6 +51,7 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
         password: state.password
       })
       localStorage.setItem('accessToken', account.accessToken)
+      navigate('/', { replace: true })
     } catch (error) {
       setState(old => ({
         ...old,
@@ -77,7 +81,7 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
           >
             Entrar
           </button>
-          <span className={Styles.link}>Criar conta</span>
+          <span data-testid="signup" className={Styles.link} onClick={() => navigate('/signup')} >Criar conta</span>
           <FormStatus />
         </form>
       </Context.Provider>
