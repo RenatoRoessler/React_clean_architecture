@@ -10,6 +10,7 @@ import {
 } from '@testing-library/react'
 import React from 'react'
 import Login from './login'
+import 'jest-localstorage-mock'
 
 type SutTypes = {
   sut: RenderResult
@@ -55,6 +56,11 @@ const simulateStateForField = (sut: RenderResult, fieldName: string, validationE
 
 describe('Login Component', () => {
   afterEach(cleanup)
+
+  beforeEach(() => {
+    localStorage.clear()
+  })
+
   test('Should start with initial state', () => {
     const validationError = faker.random.words()
     const { sut } = makeSut({ validationError })
@@ -131,15 +137,27 @@ describe('Login Component', () => {
     expect(authenticationSpy.callsCount).toBe(0)
   })
 
-  // test('Should present erro if Authentication fails', async () => {
-  //   const { sut, authenticationSpy } = makeSut()
-  //   const error = new InvalidCredentialsError()
-  //   jest.spyOn(authenticationSpy, 'auth').mockReturnValueOnce(Promise.reject(error))
-  //   simulateValidSubmit(sut)
-  //   const errorWrap = sut.getByTestId('error-wrap')
-  //   await waitFor(() => errorWrap)
-  //   const mainError = sut.getByTestId('main-error')
-  //   expect(mainError.textContent).toBe(error.message)
-  //   expect(errorWrap.childElementCount).toBe(1)
-  // })
+  test('Should present erro if Authentication fails', async () => {
+    const { sut, authenticationSpy } = makeSut()
+    const error = new InvalidCredentialsError()
+    jest.spyOn(authenticationSpy, 'auth').mockReturnValueOnce(Promise.reject(error))
+    simulateValidSubmit(sut)
+
+    await waitFor(() => {
+      const mainError = sut.getByTestId('main-error')
+      expect(mainError.textContent).toBe(error.message)
+    })
+    const errorWrap = sut.getByTestId('error-wrap')
+
+    expect(errorWrap.childElementCount).toBe(1)
+  })
+
+  test('should add accessToken to localstorage on success', async () => {
+    const { sut, authenticationSpy } = makeSut()
+    simulateValidSubmit(sut)
+    await waitFor(() => {
+      sut.getByTestId('form')
+      expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.account.accessToken)
+    })
+  })
 })
