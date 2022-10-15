@@ -167,6 +167,7 @@ describe('Login Component', () => {
     await waitFor(() => {
       sut.getByTestId('form')
       expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.account.accessToken)
+      expect(mockUsedNavigate).toHaveBeenCalledWith('/', { replace: true })
     })
   })
 
