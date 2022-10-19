@@ -11,7 +11,7 @@ import {
 import 'jest-localstorage-mock'
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import Login from './login'
+import { Login } from '@/presentation/pages'
 
 type SutTypes = {
   sut: RenderResult
