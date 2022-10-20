@@ -16,11 +16,11 @@ import { Login } from '@/presentation/pages'
 type SutTypes = {
   sut: RenderResult
   authenticationSpy: AuthenticationSpy
-};
+}
 
 type SutParams = {
   validationError: string
-};
+}
 
 const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()

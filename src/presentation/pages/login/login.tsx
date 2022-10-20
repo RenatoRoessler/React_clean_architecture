@@ -1,21 +1,19 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
+import { Authentication } from '@/domain/usecases'
 import {
-  FormStatus,
-  Footer,
-  Input,
+  Footer, FormStatus, Input,
   LoginHeader
 } from '@/presentation/components'
-import React, { useState, useEffect } from 'react'
-import Styles from './login-styles.scss'
 import Context from '@/presentation/contexts/form/form-context'
 import { Validation } from '@/presentation/protocols/validation'
-import { Authentication } from '@/domain/usecases'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import Styles from './login-styles.scss'
 
 type Props = {
   validation: Validation
   authentication: Authentication
-};
+}
 
 const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
   const [state, setState] = useState({

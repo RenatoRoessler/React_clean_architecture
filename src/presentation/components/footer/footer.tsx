@@ -1,5 +1,4 @@
 import React, { memo } from 'react'
-import Logo from '../logo/logo'
 import Styles from './footer-styles.scss'
 
 const Foooter: React.FC = () => {
