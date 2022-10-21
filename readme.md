@@ -1,5 +1,5 @@
 [![Build Status](https://app.travis-ci.com/RenatoRoessler/React_clean_architecture.svg?branch=main)](https://app.travis-ci.com/RenatoRoessler/React_clean_architecture)
-[![Coverage Status](https://coveralls.io/repos/github/rmanguinho/clean-react/badge.svg?branch=master)](https://coveralls.io/github/rmanguinho/clean-react?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/RenatoRoessler/React_clean_architecture/badge.svg?branch=main)](https://coveralls.io/github/RenatoRoessler/React_clean_architecture?branch=main)
 ## [**Link para a documentação da API**](http://fordevs.herokuapp.com/api-docs)
 
 > ## Princípios
