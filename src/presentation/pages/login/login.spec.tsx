@@ -211,6 +211,19 @@ describe('Login Component', () => {
     expect(mockUsedNavigate).toHaveBeenCalledWith('/', { replace: true })
   })
 
+  test('Should present error if SaceAccessToken fails', async () => {
+    const { sut, saveAccessTokenMock } = makeSut()
+    const error = new InvalidCredentialsError()
+    jest
+      .spyOn(saveAccessTokenMock, 'save')
+      .mockReturnValueOnce(Promise.reject(error))
+    await simulateValidSubmit(sut)
+    await waitFor(() => {
+      testElementText(sut, 'main-error', error.message)
+    })
+    testErrorWrapChildCount(sut, 1)
+  })
+
   test('should go to signup page', () => {
     const { sut } = makeSut()
     const register = sut.getByTestId('signup')
