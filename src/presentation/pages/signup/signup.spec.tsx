@@ -1,9 +1,9 @@
-import { BrowserRouter } from 'react-router-dom'
-import SignUp from './signup'
-import React from 'react'
-import { cleanup, fireEvent, render, RenderResult } from '@testing-library/react'
 import { Helper, ValidationStub } from '@/presentation/test'
 import { faker } from '@faker-js/faker'
+import { cleanup, render, RenderResult } from '@testing-library/react'
+import React from 'react'
+import { BrowserRouter } from 'react-router-dom'
+import SignUp from './signup'
 
 type SutTypes = {
   sut: RenderResult
@@ -24,15 +24,6 @@ const makeSut = (params?: SutParams): SutTypes => {
   return { sut }
 }
 
-const populateField = (
-  sut: RenderResult,
-  fieldName: string,
-  value = faker.random.word()
-): void => {
-  const input = sut.getByTestId(fieldName)
-  fireEvent.input(input, { target: { value } })
-}
-
 describe('SignUp Component', () => {
   afterEach(cleanup)
 
@@ -50,7 +41,7 @@ describe('SignUp Component', () => {
   test('Should show name error if Validation fails', () => {
     const validationError = faker.random.words()
     const { sut } = makeSut({ validationError })
-    populateField(sut, 'name')
+    Helper.populateField(sut, 'name')
     Helper.testStateForField(sut, 'name', validationError)
   })
 })
