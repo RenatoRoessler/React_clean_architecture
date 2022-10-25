@@ -18,12 +18,12 @@ const SignUp: React.FC<Props> = ({ validation }: Props) => {
     isLoading: false,
     name: '',
     email: '',
-    // password: '',
+    password: '',
     // passwordConfirmation: '',
     passwordConfirmationError: 'Campo obrigatório',
     nameError: '',
     emailError: '',
-    passwordError: 'Campo obrigatório',
+    passwordError: '',
     mainError: ''
   })
 
@@ -31,9 +31,10 @@ const SignUp: React.FC<Props> = ({ validation }: Props) => {
     setState({
       ...state,
       nameError: validation.validate('name', state.name),
-      emailError: validation.validate('email', state.emailError)
+      emailError: validation.validate('email', state.email),
+      passwordError: validation.validate('password', state.password)
     })
-  }, [state.name, state.email])
+  }, [state.name, state.email, state.password])
 
   const navigate = useNavigate()
   return (
