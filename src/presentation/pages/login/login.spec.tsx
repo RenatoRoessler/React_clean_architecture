@@ -1,5 +1,5 @@
 import { InvalidCredentialsError } from '@/domain/errors'
-import { AuthenticationSpy, SaveAccessTokenMock, ValidationStub } from '@/presentation/test'
+import { AuthenticationSpy, SaveAccessTokenMock, ValidationStub, Helper } from '@/presentation/test'
 import { faker } from '@faker-js/faker'
 import {
   cleanup,
@@ -72,24 +72,6 @@ const populatePasswordField = (
   fireEvent.input(passwordInput, { target: { value: password } })
 }
 
-const testStateForField = (
-  sut: RenderResult,
-  fieldName: string,
-  validationError?: string
-): void => {
-  const emailStatus = sut.getByTestId(`${fieldName}-status`)
-  expect(emailStatus.title).toBe(validationError || 'Tudo certo!')
-  expect(emailStatus.textContent).toBe(validationError ? '🔴' : '🟢')
-}
-
-const testErrorWrapChildCount = (
-  sut: RenderResult,
-  count: number
-): void => {
-  const errorWrap = sut.getByTestId('error-wrap')
-  expect(errorWrap.childElementCount).toBe(count)
-}
-
 const testElementExists = (
   sut: RenderResult,
   fieldName: string
@@ -107,51 +89,42 @@ const testElementText = (
   expect(el.textContent).toBe(text)
 }
 
-const testButtonIsDisabled = (
-  sut: RenderResult,
-  fieldName: string,
-  isDisabled: boolean
-): void => {
-  const button = sut.getByTestId(fieldName) as HTMLButtonElement
-  expect(button.disabled).toBe(isDisabled)
-}
-
 describe('Login Component', () => {
   afterEach(cleanup)
 
   test('Should start with initial state', () => {
     const validationError = faker.random.words()
     const { sut } = makeSut({ validationError })
-    testErrorWrapChildCount(sut, 0)
-    testButtonIsDisabled(sut, 'submit', true)
-    testStateForField(sut, 'email', validationError)
-    testStateForField(sut, 'password', validationError)
+    Helper.testChildCount(sut,'error-wrap', 0)
+    Helper.testButtonIsDisabled(sut, 'submit', true)
+    Helper.testStateForField(sut, 'email', validationError)
+    Helper.testStateForField(sut, 'password', validationError)
   })
 
   test('Should show email error if Validation fails', () => {
     const validationError = faker.random.words()
     const { sut } = makeSut({ validationError })
     populateEmailField(sut)
-    testStateForField(sut, 'email', validationError)
+    Helper.testStateForField(sut, 'email', validationError)
   })
 
   test('Should show password error if Validation fails', () => {
     const validationError = faker.random.words()
     const { sut } = makeSut({ validationError })
     populatePasswordField(sut)
-    testStateForField(sut, 'email', validationError)
+    Helper.testStateForField(sut, 'email', validationError)
   })
 
   test('Should show valid email state if validation succeeds', () => {
     const { sut } = makeSut()
     populateEmailField(sut)
-    testStateForField(sut, 'email')
+    Helper.testStateForField(sut, 'email')
   })
 
   test('Should show valid password state if validation succeeds', () => {
     const { sut } = makeSut()
     populatePasswordField(sut)
-    testStateForField(sut, 'password')
+    Helper.testStateForField(sut, 'password')
   })
 
   test('Should enabled submit button if form is valid', () => {
@@ -159,7 +132,7 @@ describe('Login Component', () => {
     populatePasswordField(sut)
     const emailInput = sut.getByTestId('email')
     fireEvent.input(emailInput, { target: { value: faker.internet.email() } })
-    testButtonIsDisabled(sut, 'submit', false)
+    Helper.testButtonIsDisabled(sut, 'submit', false)
   })
 
   test('Should show spinner on submit', async () => {
@@ -200,7 +173,7 @@ describe('Login Component', () => {
     await waitFor(() => {
       testElementText(sut, 'main-error', error.message)
     })
-    testErrorWrapChildCount(sut, 1)
+    Helper.testChildCount(sut,'error-wrap', 1)
   })
 
   test('should call SaveAccessToken on success', async () => {
@@ -221,7 +194,7 @@ describe('Login Component', () => {
     await waitFor(() => {
       testElementText(sut, 'main-error', error.message)
     })
-    testErrorWrapChildCount(sut, 1)
+    Helper.testChildCount(sut,'error-wrap', 1)
   })
 
   test('should go to signup page', () => {

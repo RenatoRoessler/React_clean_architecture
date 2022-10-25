@@ -2,6 +2,7 @@ import { BrowserRouter } from 'react-router-dom'
 import SignUp from './signup'
 import React from 'react'
 import { render, RenderResult } from '@testing-library/react'
+import { Helper } from '@/presentation/test'
 
 type SutTypes = {
   sut: RenderResult
@@ -16,43 +17,15 @@ const makeSut = (): SutTypes => {
   return { sut }
 }
 
-const testChildCount = (
-  sut: RenderResult,
-  fieldName: string,
-  count: number
-): void => {
-  const el = sut.getByTestId(fieldName)
-  expect(el.childElementCount).toBe(count)
-}
-
-const testButtonIsDisabled = (
-  sut: RenderResult,
-  fieldName: string,
-  isDisabled: boolean
-): void => {
-  const button = sut.getByTestId(fieldName) as HTMLButtonElement
-  expect(button.disabled).toBe(isDisabled)
-}
-
-const testStateForField = (
-  sut: RenderResult,
-  fieldName: string,
-  validationError?: string
-): void => {
-  const fieldStatus = sut.getByTestId(`${fieldName}-status`)
-  expect(fieldStatus.title).toBe(validationError || 'Tudo certo!')
-  expect(fieldStatus.textContent).toBe(validationError ? '🔴' : '🟢')
-}
-
 describe('SignUp Component', () => {
   test('Should start with initial state', () => {
     const { sut } = makeSut()
     const validationError = 'Campo obrigatório'
-    testChildCount(sut,'error-wrap', 0)
-    testButtonIsDisabled(sut, 'submit', true)
-    testStateForField(sut, 'name', validationError)
-    testStateForField(sut, 'email', validationError)
-    testStateForField(sut, 'password', validationError)
-    testStateForField(sut, 'passwordConfirmation', validationError)
+    Helper.testChildCount(sut,'error-wrap', 0)
+    Helper.testButtonIsDisabled(sut, 'submit', true)
+    Helper.testStateForField(sut, 'name', validationError)
+    Helper.testStateForField(sut, 'email', validationError)
+    Helper.testStateForField(sut, 'password', validationError)
+    Helper.testStateForField(sut, 'passwordConfirmation', validationError)
   })
 })
