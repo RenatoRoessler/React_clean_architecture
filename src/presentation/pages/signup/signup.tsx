@@ -4,29 +4,41 @@ import {
   LoginHeader
 } from '@/presentation/components'
 import Context from '@/presentation/contexts/form/form-context'
-import React, { useState } from 'react'
+import { Validation } from '@/presentation/protocols/validation'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Styles from './signup-styles.scss'
 
-const SignUp: React.FC = () => {
+type Props = {
+  validation: Validation
+}
+
+const SignUp: React.FC<Props> = ({ validation }: Props) => {
   const [state, setState] = useState({
     isLoading: false,
-    // name: '',
+    name: '',
     // email: '',
     // password: '',
     // passwordConfirmation: '',
     passwordConfirmationError: 'Campo obrigatório',
-    nameError: 'Campo obrigatório',
+    nameError: '',
     emailError: 'Campo obrigatório',
     passwordError: 'Campo obrigatório',
     mainError: ''
   })
 
+  useEffect(() => {
+    setState({
+      ...state,
+      nameError: validation.validate('name', state.name)
+    })
+  }, [state.name])
+
   const navigate = useNavigate()
   return (
     <div className={Styles.signup}>
       <LoginHeader />
-      <Context.Provider value={{ state }}>
+      <Context.Provider value={{ state, setState }}>
         <form data-testid="form" className={Styles.form} >
           <h2>Criar Conta</h2>
           <Input type="text" name="name" placeholder="Digite seu Nome" />
