@@ -52,11 +52,11 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
       await saveAccessToken.save(account.accessToken)
       navigate('/', { replace: true })
     } catch (error) {
-      setState(old => ({
-        ...old,
+      setState({
+        ...state,
         isLoading: false,
         mainError: error.message
-      }))
+      })
     }
   }
 
