@@ -177,4 +177,17 @@ describe('SignUp Component', () => {
     expect(saveAccessTokenMock.accessToken).toBe(addAccountSpy.account.accessToken)
     expect(mockUsedNavigate).toHaveBeenCalledWith('/', { replace: true })
   })
+
+  test('Should present error if SaceAccessToken fails', async () => {
+    const { sut, saveAccessTokenMock } = makeSut()
+    const error = new EmailInUseError()
+    jest
+      .spyOn(saveAccessTokenMock, 'save')
+      .mockReturnValueOnce(Promise.reject(error))
+    await simulateValidSubmit(sut)
+    await waitFor(() => {
+      Helper.testElementText(sut, 'main-error', error.message)
+    })
+    Helper.testChildCount(sut,'error-wrap', 1)
+  })
 })
