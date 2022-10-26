@@ -1,5 +1,5 @@
 import { EmailInUseError } from '@/domain/errors'
-import { AddAccountSpy, Helper, ValidationStub } from '@/presentation/test'
+import { AddAccountSpy, Helper, SaveAccessTokenMock, ValidationStub } from '@/presentation/test'
 import { faker } from '@faker-js/faker'
 import { cleanup, fireEvent, render, RenderResult, waitFor } from '@testing-library/react'
 import React from 'react'
@@ -9,6 +9,7 @@ import SignUp from './signup'
 type SutTypes = {
   sut: RenderResult
   addAccountSpy: AddAccountSpy
+  saveAccessTokenMock: SaveAccessTokenMock
 }
 
 type SutParams = {
@@ -19,13 +20,21 @@ const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
   validationStub.errorMessage = params?.validationError
   const addAccountSpy = new AddAccountSpy()
+  const saveAccessTokenMock = new SaveAccessTokenMock()
   const sut = render(
     <BrowserRouter>
-      <SignUp validation={validationStub} addAccount={addAccountSpy} />
+      <SignUp validation={validationStub} addAccount={addAccountSpy} saveAccessToken={saveAccessTokenMock} />
     </BrowserRouter>
   )
-  return { sut, addAccountSpy }
+  return { sut, addAccountSpy, saveAccessTokenMock }
 }
+
+export const mockUsedNavigate = jest.fn()
+jest.mock('react-router-dom', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  ...(jest.requireActual('react-router-dom') as any),
+  useNavigate: () => mockUsedNavigate
+}))
 
 const simulateValidSubmit = async (
   sut: RenderResult,
@@ -159,5 +168,13 @@ describe('SignUp Component', () => {
       Helper.testElementText(sut, 'main-error', error.message)
     })
     Helper.testChildCount(sut,'error-wrap', 1)
+  })
+
+  test('should call SaveAccessToken on success', async () => {
+    const { sut, addAccountSpy, saveAccessTokenMock } = makeSut()
+    await simulateValidSubmit(sut)
+    sut.getByTestId('form')
+    expect(saveAccessTokenMock.accessToken).toBe(addAccountSpy.account.accessToken)
+    expect(mockUsedNavigate).toHaveBeenCalledWith('/', { replace: true })
   })
 })
