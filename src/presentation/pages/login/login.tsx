@@ -2,7 +2,8 @@
 import { Authentication, SaveAccessToken } from '@/domain/usecases'
 import {
   Footer, FormStatus, Input,
-  LoginHeader
+  LoginHeader,
+  SubmitButton
 } from '@/presentation/components'
 import Context from '@/presentation/contexts/form/form-context'
 import { Validation } from '@/presentation/protocols/validation'
@@ -19,6 +20,7 @@ type Props = {
 const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }: Props) => {
   const [state, setState] = useState({
     isLoading: false,
+    isFormInvalid: true,
     email: '',
     password: '',
     mainError: '',
@@ -27,10 +29,13 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
   })
 
   useEffect(() => {
+    const emailError = validation.validate('email', state.email)
+    const passwordError = validation.validate('password', state.password)
     setState({
       ...state,
-      emailError: validation.validate('email', state.email),
-      passwordError: validation.validate('password', state.password)
+      emailError,
+      passwordError,
+      isFormInvalid: !!emailError || !!passwordError
     })
   }, [state.email, state.password])
 
@@ -41,7 +46,7 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
   ): Promise<void> => {
     try {
       event.preventDefault()
-      if (state.isLoading || state.emailError || state.passwordError) {
+      if (state.isLoading || state.isFormInvalid) {
         return
       }
       setState({ ...state, isLoading: true })
@@ -72,14 +77,7 @@ const Login: React.FC<Props> = ({ validation, authentication, saveAccessToken }:
             name="password"
             placeholder="Digite seu senha"
           />
-          <button
-            data-testid="submit"
-            disabled={!!state.emailError || !!state.passwordError}
-            type="submit"
-            className={Styles.submit}
-          >
-            Entrar
-          </button>
+          <SubmitButton text="Entrar" />
           <span data-testid="signup-link" className={Styles.link} onClick={() => navigate('/signup')} >Criar conta</span>
           <FormStatus />
         </form>
