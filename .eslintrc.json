@@ -7,9 +7,13 @@
   "extends": [
     "standard-with-typescript",
     "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:cypress/recommended"
   ],
-  "plugins": ["react"],
+  "env": {
+    "cypress/globals": true
+  },
+  "plugins": ["react", "cypress"],
   "parserOptions": {
     "project": "./tsconfig.json"
   },
