@@ -108,8 +108,7 @@ describe('Login', () => {
             }
         })
         cy.getByTestId('email').focus().type(faker.internet.email())
-        cy.getByTestId('password').focus().type(faker.random.alphaNumeric(6))
-        cy.getByTestId('submit').click()
+        cy.getByTestId('password').focus().type(faker.random.alphaNumeric(6)).type('{enter}')
         cy.getByTestId('main-error').should('not.exist')
         cy.getByTestId('spinner').should('not.exist')
         cy.url().should('eq', `${baseUrl}/`)
@@ -129,6 +128,5 @@ describe('Login', () => {
         cy.getByTestId('password').focus().type(faker.random.alphaNumeric(6))
         cy.getByTestId('submit').dblclick()
         cy.get('@request.all').should('have.length', 1)
-
     })
 })
