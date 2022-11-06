@@ -13,27 +13,27 @@ const Input: React.FC<Props> = (props: Props) => {
   const inputRef = useRef<HTMLInputElement>();
 
   return (
-    <div className={Styles.inputWrap}>
+    <div className={Styles.inputWrap} data-status={error ? "invalid" : "valid"} data-testid={`${props.name}-wrap`}>
       <input
         {...props}
         ref={inputRef}
         placeholder=" "
+        title={error}
         data-testid={props.name}
         readOnly
-        onFocus={e => {e.target.readOnly = false}}
-        onChange={e => {setState({
-          ...state,
-          [e.target.name]: e.target.value,
-        })}}
+        onFocus={(e) => {
+          e.target.readOnly = false;
+        }}
+        onChange={(e) => {
+          setState({
+            ...state,
+            [e.target.name]: e.target.value,
+          });
+        }}
       />
-      <label onClick={() => inputRef.current.focus()}>{props.placeholder}</label>
-      <span
-        data-testid={`${props.name}-status`}
-        title={error || "Tudo certo!"}
-        className={Styles.status}
-      >
-        {error ? "🔴" : "🟢"}
-      </span>
+      <label onClick={() => inputRef.current.focus()} title={error} data-testid={`${props.name}-label`}>
+        {props.placeholder}
+      </label>
     </div>
   );
 };
